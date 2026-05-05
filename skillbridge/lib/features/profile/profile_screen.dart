@@ -50,6 +50,14 @@ class ProfileScreen extends ConsumerWidget {
                   user.name,
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
+                if (user.username.isNotEmpty)
+                  Text(
+                    '@${user.username}',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
                 const SizedBox(height: 8),
                 Text(
                   user.email,
@@ -57,7 +65,26 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 if (user.bio.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  Text(user.bio, textAlign: TextAlign.center),
+                  Text(
+                    user.bio,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+                if (user.hobbies.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    alignment: WrapAlignment.center,
+                    children: user.hobbies
+                        .map((hobby) => Chip(
+                              label: Text(hobby),
+                              visualDensity: VisualDensity.compact,
+                              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                            ))
+                        .toList(),
+                  ),
                 ],
                 const SizedBox(height: 16),
                 
@@ -96,7 +123,9 @@ class ProfileScreen extends ConsumerWidget {
                   leading: const Icon(Icons.edit),
                   title: const Text('Edit Profile'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {},
+                  onTap: () {
+                    context.push('/edit-profile');
+                  },
                 ),
                 if (user.role == 'admin')
                   ListTile(

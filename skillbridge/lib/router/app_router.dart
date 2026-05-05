@@ -11,6 +11,7 @@ import 'package:skillbridge/features/chat/chat_screen.dart';
 import 'package:skillbridge/features/skills/add_skill_screen.dart';
 import 'package:skillbridge/features/skills/skill_detail_screen.dart';
 import 'package:skillbridge/features/profile/profile_screen.dart';
+import 'package:skillbridge/features/profile/edit_profile_screen.dart';
 import 'package:skillbridge/features/admin/admin_dashboard.dart';
 import 'package:skillbridge/features/bookings/my_sessions_screen.dart';
 import 'package:skillbridge/features/skills/saved_skills_screen.dart';
@@ -49,27 +50,42 @@ GoRouter appRouter(Ref ref) {
         path: '/signup',
         builder: (context, state) => const SignupScreen(),
       ),
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) {
-          return MainScaffold(child: child);
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainScaffold(navigationShell: navigationShell);
         },
-        routes: [
-          GoRoute(
-            path: '/home',
-            builder: (context, state) => const HomeScreen(),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
           ),
-          GoRoute(
-            path: '/chat',
-            builder: (context, state) => const ChatListScreen(),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/chat',
+                builder: (context, state) => const ChatListScreen(),
+              ),
+            ],
           ),
-          GoRoute(
-            path: '/add-skill',
-            builder: (context, state) => const AddSkillScreen(),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/add-skill',
+                builder: (context, state) => const AddSkillScreen(),
+              ),
+            ],
           ),
-          GoRoute(
-            path: '/profile',
-            builder: (context, state) => const ProfileScreen(),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
           ),
         ],
       ),
@@ -98,6 +114,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: '/saved-skills',
         builder: (context, state) => const SavedSkillsScreen(),
+      ),
+      GoRoute(
+        path: '/edit-profile',
+        builder: (context, state) => const EditProfileScreen(),
       ),
     ],
   );

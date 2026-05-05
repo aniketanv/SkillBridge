@@ -36,13 +36,14 @@ class AuthRepository {
     await _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  Future<void> signUpWithEmail(String email, String password, String name) async {
+  Future<void> signUpWithEmail(String email, String password, String name, String username) async {
     UserCredential cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
     
     // Create user in firestore
     UserModel userModel = UserModel(
       id: cred.user!.uid,
       name: name,
+      username: username,
       email: email,
       createdAt: DateTime.now(),
     );
@@ -105,6 +106,19 @@ class AuthRepository {
   Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _auth.signOut();
+  }
+
+  Future<bool> isUsernameUnique(String username) async {
+    final query = await _firestore
+        .collection('users')
+        .where('username', isEqualTo: username)
+        .limit(1)
+        .get();
+    return query.docs.isEmpty;
+  }
+
+  Future<void> updateProfile(String uid, Map<String, dynamic> data) async {
+    await _firestore.collection('users').doc(uid).update(data);
   }
 }
 

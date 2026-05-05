@@ -13,6 +13,7 @@ class SignupScreen extends ConsumerStatefulWidget {
 
 class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _nameController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -20,6 +21,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -31,6 +33,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         _emailController.text.trim(),
         _passwordController.text.trim(),
         _nameController.text.trim(),
+        _usernameController.text.trim(),
         context,
       );
     }
@@ -79,6 +82,17 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     controller: _nameController,
                     prefixIcon: Icons.person_outline,
                     validator: (val) => val != null && val.isNotEmpty ? null : 'Enter your name',
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    hintText: 'Username',
+                    controller: _usernameController,
+                    prefixIcon: Icons.alternate_email,
+                    validator: (val) {
+                      if (val == null || val.isEmpty) return 'Enter a username';
+                      if (val.length < 3) return 'Username too short';
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   CustomTextField(

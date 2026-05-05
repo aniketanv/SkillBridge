@@ -25,10 +25,13 @@ class AuthController extends _$AuthController {
     }
   }
 
-  Future<void> signUpWithEmail(String email, String password, String name, BuildContext context) async {
+  Future<void> signUpWithEmail(String email, String password, String name, String username, BuildContext context) async {
     state = true;
     try {
-      await ref.read(authRepositoryProvider).signUpWithEmail(email, password, name);
+      final isUnique = await ref.read(authRepositoryProvider).isUsernameUnique(username);
+      if (!isUnique) throw 'Username already taken';
+      
+      await ref.read(authRepositoryProvider).signUpWithEmail(email, password, name, username);
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
@@ -90,5 +93,39 @@ class AuthController extends _$AuthController {
 
   Future<void> signOut() async {
     await ref.read(authRepositoryProvider).signOut();
+  }
+
+  Future<void> updateProfile({
+    required String uid,
+    String? name,
+    String? username,
+    String? bio,
+    List<String>? hobbies,
+    BuildContext? context,
+  }) async {
+    state = true;
+    try {
+      final Map<String, dynamic> data = {};
+      if (name != null) data['name'] = name;
+      if (username != null) {
+        final isUnique = await ref.read(authRepositoryProvider).isUsernameUnique(username);
+        if (!isUnique) throw 'Username already taken';
+        data['username'] = username;
+      }
+      if (bio != null) data['bio'] = bio;
+      if (hobbies != null) data['hobbies'] = hobbies;
+
+      if (data.isNotEmpty) {
+        await ref.read(authRepositoryProvider).updateProfile(uid, data);
+        ref.invalidate(currentUserProvider);
+      }
+    } catch (e) {
+      if (context != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+      rethrow;
+    } finally {
+      state = false;
+    }
   }
 }

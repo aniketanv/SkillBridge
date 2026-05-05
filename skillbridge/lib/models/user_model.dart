@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserModel {
   final String id;
   final String name;
+  final String username;
   final String email;
   final String profilePhotoUrl;
   final String role;
   final DateTime createdAt;
   final String bio;
+  final List<String> hobbies;
   final int credits;
   final double averageRating;
   final int totalRatings;
@@ -19,11 +21,13 @@ class UserModel {
   UserModel({
     required this.id,
     required this.name,
+    this.username = '',
     required this.email,
     this.profilePhotoUrl = '',
     this.role = 'user',
     required this.createdAt,
     this.bio = '',
+    this.hobbies = const [],
     this.credits = 20,
     this.averageRating = 0.0,
     this.totalRatings = 0,
@@ -35,11 +39,13 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'name': name,
+      'username': username,
       'email': email,
       'profilePhotoUrl': profilePhotoUrl,
       'role': role,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'bio': bio,
+      'hobbies': hobbies,
       'credits': credits,
       'averageRating': averageRating,
       'totalRatings': totalRatings,
@@ -61,11 +67,13 @@ class UserModel {
     return UserModel(
       id: id,
       name: map['name'] as String? ?? '',
+      username: map['username'] as String? ?? '',
       email: map['email'] as String? ?? '',
       profilePhotoUrl: map['profilePhotoUrl'] as String? ?? '',
       role: map['role'] as String? ?? 'user',
       createdAt: parsedDate,
       bio: map['bio'] as String? ?? '',
+      hobbies: List<String>.from(map['hobbies'] ?? []),
       credits: map['credits'] as int? ?? 20,
       averageRating: (map['averageRating'] as num?)?.toDouble() ?? 0.0,
       totalRatings: map['totalRatings'] as int? ?? 0,
@@ -78,11 +86,13 @@ class UserModel {
   UserModel copyWith({
     String? id,
     String? name,
+    String? username,
     String? email,
     String? profilePhotoUrl,
     String? role,
     DateTime? createdAt,
     String? bio,
+    List<String>? hobbies,
     int? credits,
     double? averageRating,
     int? totalRatings,
@@ -93,11 +103,13 @@ class UserModel {
     return UserModel(
       id: id ?? this.id,
       name: name ?? this.name,
+      username: username ?? this.username,
       email: email ?? this.email,
       profilePhotoUrl: profilePhotoUrl ?? this.profilePhotoUrl,
       role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
       bio: bio ?? this.bio,
+      hobbies: hobbies ?? this.hobbies,
       credits: credits ?? this.credits,
       averageRating: averageRating ?? this.averageRating,
       totalRatings: totalRatings ?? this.totalRatings,
